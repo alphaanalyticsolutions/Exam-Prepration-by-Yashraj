@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BGYCT-133 · Tonight's Study Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Syne:wght@700;800&display=swap');
+
+  :root {
+    --bg: #F7F6F2;
+    --surface: #FFFFFF;
+    --border: #E4E2DB;
+    --text: #1A1917;
+    --muted: #706E69;
+    --faint: #B0AEA8;
+
+    --blue-bg: #EBF2FC;
+    --blue-text: #1A4F8A;
+    --blue-dot: #2D7DD2;
+
+    --amber-bg: #FEF3E2;
+    --amber-text: #7A4A08;
+    --amber-dot: #E8920A;
+
+    --purple-bg: #EFECFD;
+    --purple-text: #3B2B8F;
+    --purple-dot: #6B55D4;
+
+    --teal-bg: #E5F5EF;
+    --teal-text: #0F5C3F;
+    --teal-dot: #1B9E6B;
+
+    --must-bg: #FEECEC;
+    --must-text: #8B2020;
+    --high-bg: #FEF3E2;
+    --high-text: #7A4A08;
+    --ok-bg: #E5F5EF;
+    --ok-text: #0F5C3F;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--text);
+    color: #fff;
+    padding: 3rem 2rem 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: 'BGYCT';
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 11rem;
+    color: rgba(255,255,255,.05);
+    position: absolute;
+    right: -1rem;
+    top: -1.5rem;
+    letter-spacing: -.04em;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .hero-inner { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.45);
+    margin-bottom: .6rem;
+  }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  .hero-title span { color: #F5A623; }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem .9rem;
+    margin-top: 1.25rem;
+  }
+  .hero-pill {
+    font-size: 12px;
+    font-weight: 500;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 20px;
+    padding: 4px 14px;
+    color: rgba(255,255,255,.85);
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .progress-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .progress-label { font-size: 13px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #1B9E6B;
+    border-radius: 3px;
+    transition: width .35s ease;
+    width: 0%;
+  }
+  .progress-pct { font-size: 13px; font-weight: 600; color: var(--text); min-width: 36px; text-align: right; }
+  .reset-btn {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .reset-btn:hover { background: var(--bg); }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 860px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+
+  /* ── PHASE HEADER ── */
+  .phase-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 2.5rem 0 .85rem;
+  }
+  .phase-label:first-child { margin-top: 0; }
+  .phase-label-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .phase-label-text {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+
+  /* ── BLOCK CARD ── */
+  .block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: .75rem;
+  }
+  .block-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: .9rem 1.25rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .block-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .block-name { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+  .block-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .block-time {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ── TOPIC ROW ── */
+  .topic {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: .8rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background .1s;
+  }
+  .topic:last-of-type { border-bottom: none; }
+  .topic:hover { background: #FAFAF8; }
+  .topic.checked { background: #F9FDF9; }
+
+  .cb {
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .15s;
+  }
+  .cb svg { display: none; width: 11px; height: 11px; }
+  .topic.checked .cb {
+    background: #1B9E6B;
+    border-color: #1B9E6B;
+  }
+  .topic.checked .cb svg { display: block; }
+
+  .topic-body { flex: 1; }
+  .topic-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 2px;
+    transition: color .15s;
+  }
+  .topic.checked .topic-title {
+    color: var(--faint);
+    text-decoration: line-through;
+    text-decoration-color: var(--faint);
+  }
+  .topic-desc {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+  .topic.checked .topic-desc { color: var(--faint); }
+
+  .priority {
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 2px 9px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .p-must { background: var(--must-bg); color: var(--must-text); }
+  .p-high { background: var(--high-bg); color: var(--high-text); }
+  .p-ok   { background: var(--ok-bg);   color: var(--ok-text); }
+
+  /* ── TIP ROW ── */
+  .tip {
+    padding: .7rem 1.25rem;
+    background: #FFFDF5;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px;
+    color: var(--amber-text);
+    line-height: 1.55;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .tip-icon { flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+
+  /* ── BOTTOM GRID ── */
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .75rem;
+    margin-top: 2.5rem;
+  }
+  @media(max-width: 580px) { .bottom-grid { grid-template-columns: 1fr; } }
+
+  .bottom-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.1rem 1.25rem;
+  }
+  .bottom-card-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: .65rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bottom-card-title span { font-size: 16px; }
+  .bottom-item {
+    font-size: 12.5px;
+    color: var(--muted);
+    padding: 4px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+  .bottom-item:last-child { border-bottom: none; }
+  .bottom-item::before { content: '→'; color: var(--faint); flex-shrink: 0; }
+
+  /* ── MARKS SUMMARY ── */
+  .marks-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .75rem;
+    margin-bottom: 2rem;
+  }
+  @media(max-width: 500px) { .marks-strip { grid-template-columns: 1fr 1fr; } }
+  .marks-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .75rem 1rem;
+    text-align: center;
+  }
+  .marks-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--text); line-height: 1; }
+  .marks-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; font-weight: 500; }
+
+  /* ── DOT COLORS ── */
+  .dot-blue   { background: var(--blue-dot); }
+  .dot-amber  { background: var(--amber-dot); }
+  .dot-purple { background: var(--purple-dot); }
+  .dot-teal   { background: var(--teal-dot); }
+
+  .badge-blue   { background: var(--blue-bg);   color: var(--blue-text); }
+  .badge-amber  { background: var(--amber-bg);  color: var(--amber-text); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple-text); }
+  .badge-teal   { background: var(--teal-bg);   color: var(--teal-text); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 12px;
+    color: var(--faint);
+    border-top: 1px solid var(--border);
+    margin-top: 1rem;
+  }
+
+  @media(max-width: 600px) {
+    .hero { padding: 2rem 1.25rem 2rem; }
+    .hero::after { font-size: 6rem; }
+    .main { padding: 1.5rem 1.25rem 3rem; }
+    .progress-wrap { padding: .75rem 1.25rem; }
+  }
+
+  @media print {
+    .progress-wrap { position: static; }
+    .topic { cursor: default; }
+    .topic:hover { background: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">IGNOU · BSCG / BSCM · Term-End Exam</div>
+    <h1 class="hero-title">Tonight's study plan<br><span>BGYCT-133</span></h1>
+    <div class="hero-meta">
+      <span class="hero-pill">Crystallography, Mineralogy &amp; Economic Geology</span>
+      <span class="hero-pill">50 marks · 2 hours</span>
+      <span class="hero-pill">Based on 6 PYQs (2023–2025)</span>
+      <span class="hero-pill">2.5 hrs prep tonight</span>
+    </div>
+  </div>
+</header>
+
+<!-- STICKY PROGRESS -->
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <span class="progress-label" id="prog-label">0 / 16 done</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog-fill"></div>
+    </div>
+    <span class="progress-pct" id="prog-pct">0%</span>
+    <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- MARKS OVERVIEW -->
+  <div class="marks-strip">
+    <div class="marks-card">
+      <div class="marks-num">10</div>
+      <div class="marks-lbl">Q1 · Short definitions</div>
+    </div>
+    <div class="marks-card">
+      <div class="marks-num">20</div>
+      <div class="marks-lbl">Q2 · Short notes</div>
+    </div>
+    <div class="marks-card">
+      <div class="marks-num">10</div>
+      <div class="marks-lbl">Q3 · Crystal systems</div>
+    </div>
+    <div class="marks-card">
+      <div class="marks-num">10</div>
+      <div class="marks-lbl">Q4 · Economic geology</div>
+    </div>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase-label">
+    <div class="phase-label-line"></div>
+    <div class="phase-label-text">Phase 1 · 6:00 – 7:00 PM · Q1 + Q2 bank</div>
+    <div class="phase-label-line"></div>
+  </div>
+
+  <!-- BLOCK A -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-dot dot-blue"></div>
+      <div class="block-name">Block A — Short definitions <span style="font-weight:400;color:var(--muted)">(Q1 answers)</span></div>
+      <span class="block-badge badge-blue">30 min</span>
+      <span class="block-time">10 marks secured</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Crystal habit + Pinacoid + Dome</div>
+        <div class="topic-desc">2–3 line definition each. Crystal habit = external shape developed under growth conditions. Pinacoid = open form of 2 parallel faces. Dome = 2 faces meeting at an edge parallel to one axis.</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Twinning — Carlsbad vs Polysynthetic</div>
+        <div class="topic-desc">Carlsbad = penetration twin in orthoclase, twin axis = c-axis. Polysynthetic = repeated contact twins in plagioclase, parallel composition planes. Both have appeared in 5 of 6 papers.</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Tenacity + Fracture types + Cleavage</div>
+        <div class="topic-desc">Tenacity = resistance to breaking (brittle, sectile, malleable, elastic, flexible). Fracture = irregular break, not along crystal planes (conchoidal, hackly, uneven). Cleavage = break along crystallographic planes — perfect/good/poor.</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Idiochromatic minerals + Colour variation reasons</div>
+        <div class="topic-desc">Idiochromatic = colour from essential element (malachite = green from Cu). Allochromatic = colour from impurities. Colour varies due to: inclusions, crystal defects, pigments, physical structure. Appeared in 5/6 papers.</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Metallogenic epoch + Gangue + Ore grade</div>
+        <div class="topic-desc">Metallogenic epoch = geological time interval when major ore deposits formed under specific conditions. Gangue = economically worthless minerals in an ore body. Ore grade = metal content per tonne (g/t for gold, % for base metals).</div>
+      </div>
+      <span class="priority p-high">high</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Steno's law + Bragg's law + Solid angle</div>
+        <div class="topic-desc">Steno's law = interfacial angles between corresponding faces are constant for the same mineral at same temp. Bragg's law: nλ = 2d sinθ (X-ray diffraction by crystal planes). Solid angle = 3D angular space at a crystal vertex.</div>
+      </div>
+      <span class="priority p-high">high</span>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">💡</span>
+      Write each definition on rough paper — 2–3 sentences max. You're not writing essays, just showing you know the concept. Crisp = more marks in 2 marks questions.
+    </div>
+  </div>
+
+  <!-- BLOCK B -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-dot dot-amber"></div>
+      <div class="block-name">Block B — Short notes <span style="font-weight:400;color:var(--muted)">(Q2 bank, pick best 4 of these 5)</span></div>
+      <span class="block-badge badge-amber">30 min</span>
+      <span class="block-time">20 marks secured</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Coal — ranks + microscopic units (macerals)</div>
+        <div class="topic-desc">Ranks (increasing carbon %): Peat → Lignite → Bituminous → Anthracite. Macerals: Vitrinite (woody tissue), Exinite (spores, algae, resin), Inertinite (oxidised matter). Varieties of bituminous: cannel, boghead, splint coal. Appeared in ALL 6 papers — easiest 5 marks ever.</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Optical properties of hornblende</div>
+        <div class="topic-desc">PPL: dark green/brown colour, strong pleochroism (green↔brown↔yellow), 2 cleavages at 124° and 56°, good relief. XPL: birefringence 0.014–0.026, 2nd order blue-green interference colours, inclined extinction ~15–25°, no twinning. Amphibole group. Appeared in 3/6 papers.</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Chief ores of copper</div>
+        <div class="topic-desc">Native copper, Chalcopyrite (CuFeS₂) — most important, Chalcocite (Cu₂S), Bornite (Cu₅FeS₄), Malachite (Cu₂CO₃(OH)₂), Azurite, Cuprite (Cu₂O). Indian deposits: Khetri (Rajasthan) — largest, Malanjkhand (MP), Singhbhum (Jharkhand).</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Concordant vs discordant ore bodies</div>
+        <div class="topic-desc">Concordant: parallel to host rock structure — beds/seams, sills, saddle reefs, mantos, lenses, stratabound. Discordant: cuts across host rock — veins, lodes, pipes, dikes, stockworks, breccia pipes, contact metasomatic. Draw a simple cross-section diagram showing both.</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Applications of minerals in war</div>
+        <div class="topic-desc">Titanium (armour plating, aircraft), Beryllium (nuclear reactors, X-ray windows), Mica (electrical insulators in communication equipment), Graphite (explosives, lubricants), Quartz (radio/radar oscillators), Magnetite (compass), Chromite (armour steel). Appeared in 4/6 papers.</div>
+      </div>
+      <span class="priority p-high">high</span>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">💡</span>
+      Each short note = ~8–10 lines in the answer book. Include a diagram for ore bodies and cleavage angles. Diagrams pull marks even if your written content is thin.
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-label">
+    <div class="phase-label-line"></div>
+    <div class="phase-label-text">Phase 2 · 7:00 – 8:00 PM · Q3 + Q4 long answers</div>
+    <div class="phase-label-line"></div>
+  </div>
+
+  <!-- BLOCK C -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-dot dot-purple"></div>
+      <div class="block-name">Block C — Crystal systems long answer <span style="font-weight:400;color:var(--muted)">(Q3)</span></div>
+      <span class="block-badge badge-purple">25 min</span>
+      <span class="block-time">10 marks</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Hexagonal system — axes, symmetry, forms + diagram</div>
+        <div class="topic-desc">4 axes: 3 horizontal equal (a₁=a₂=a₃) at 120° + 1 vertical (c) at 90°. Symmetry elements: 1 six-fold principal axis, 6 two-fold axes, 7 planes of symmetry, 1 centre. Forms: hexagonal prism, hexagonal pyramid, hexagonal dipyramid, pinacoid. Draw labelled axis diagram. Examples: quartz, beryl, apatite.</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Tetragonal system — axes, symmetry, forms + diagram</div>
+        <div class="topic-desc">3 axes: 2 equal horizontal (a₁=a₂) + 1 vertical (c≠a), all at 90°. Symmetry: 1 four-fold axis, 4 two-fold axes, 5 planes, 1 centre. Forms: tetragonal prism, tetragonal pyramid, tetragonal dipyramid, pinacoid, disphenoid. Examples: zircon, cassiterite, rutile, vesuvianite.</div>
+      </div>
+      <span class="priority p-high">high</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Optical properties under PPL + XPL (backup if above don't appear)</div>
+        <div class="topic-desc">PPL: colour, pleochroism, form/habit, cleavage, relief, inclusions, alteration. XPL: birefringence (thickness × Δn), Newton's colour scale, extinction angle (straight/inclined/symmetrical), interference figure, twinning. Draw Newton's colour chart — 1st to 4th order bands.</div>
+      </div>
+      <span class="priority p-high">high</span>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">💡</span>
+      Crystal system answers: axis diagram + symmetry table = 6 marks minimum. The remaining 4 come from correctly naming forms and giving 2–3 mineral examples. Don't skip the diagram — it's free marks.
+    </div>
+  </div>
+
+  <!-- BLOCK D -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-dot dot-teal"></div>
+      <div class="block-name">Block D — Economic geology long answer <span style="font-weight:400;color:var(--muted)">(Q4)</span></div>
+      <span class="block-badge badge-teal">25 min</span>
+      <span class="block-time">10 marks</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Iron ore — formation processes + Indian distribution</div>
+        <div class="topic-desc">Formation: BIF (banded iron formation) — sedimentary precambrian deposits, magmatic segregation (titano-magnetite), lateritic weathering (limonite). Ore minerals: magnetite (Fe₃O₄), hematite (Fe₂O₃), limonite, siderite. India: Jharkhand/Odisha (Singhbhum, Barbil-Barajamda), Karnataka (Kudremukh, Bellary), Goa, Chhattisgarh. Sketch India map outline + label states.</div>
+      </div>
+      <span class="priority p-must">must</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Lead-zinc deposits in India (Dec 2025 pattern)</div>
+        <div class="topic-desc">Principal ore minerals: Galena (PbS), Sphalerite/Blende (ZnS), secondary — cerussite, smithsonite, anglesite. Major deposits: Zawar mine, Rajasthan — largest in India (Rajpura-Dariba, Mochia Magra), Rampura-Agucha (Rajasthan) — one of world's largest zinc mines, Sargipalli (Odisha). Formation: hydrothermal veins, SEDEX (sedimentary exhalative).</div>
+      </div>
+      <span class="priority p-high">high</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Contact metamorphism + Contact metasomatism (Or option)</div>
+        <div class="topic-desc">Contact metamorphism: thermal effect of igneous intrusion on surrounding country rock → forms an aureole. Contact metasomatism (skarnification): chemical exchange between hot fluids from intrusion and carbonate host rock → skarn minerals (garnet, wollastonite, diopside, magnetite, epidote). Example zones: inner endoskarn, outer exoskarn.</div>
+      </div>
+      <span class="priority p-ok">good</span>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">💡</span>
+      For economic geology: Indian state names + ore mineral chemical formulas + a rough India map = very strong answer. Examiners reward specific Indian location examples — drop at least 3 per answer.
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-label">
+    <div class="phase-label-line"></div>
+    <div class="phase-label-text">Phase 3 · 8:00 – 8:30 PM · Final revision</div>
+    <div class="phase-label-line"></div>
+  </div>
+
+  <!-- BLOCK E -->
+  <div class="block">
+    <div class="block-header">
+      <div class="block-dot dot-teal"></div>
+      <div class="block-name">Block E — Confidence builder</div>
+      <span class="block-badge badge-teal">30 min</span>
+      <span class="block-time">before sleep</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Read all your rough notes once — no new topics</div>
+        <div class="topic-desc">Just scan what you already wrote. Memory consolidation happens when you revisit, not when you add new material at the last minute. This pass doubles retention.</div>
+      </div>
+      <span class="priority p-ok">review</span>
+    </div>
+
+    <div class="topic" onclick="toggle(this)">
+      <div class="cb"><svg viewBox="0 0 12 12" fill="none"><polyline points="1.5,6 4.5,9 10.5,3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="topic-body">
+        <div class="topic-title">Decide your Q2 pick list now — commit to 4 topics</div>
+        <div class="topic-desc">Recommended: Coal ranks/macerals + Hornblende optical + Copper ores + Ore bodies (concordant/discordant). Write these 4 on a sticky note. Don't rethink in the exam — waste of time.</div>
+      </div>
+      <span class="priority p-ok">review</span>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">💡</span>
+      Sleep early. A rested brain retrieves faster than a tired one that crammed 2 extra pages. You've covered all the high-frequency PYQ topics. Trust the prep.
+    </div>
+  </div>
+
+  <!-- BOTTOM GRID -->
+  <div class="bottom-grid">
+    <div class="bottom-card">
+      <div class="bottom-card-title"><span>✍️</span> In the exam hall</div>
+      <div class="bottom-item">Read ALL questions first — spend 5 min on this</div>
+      <div class="bottom-item">Q1: attempt all 7 options, cross out your 2 weakest</div>
+      <div class="bottom-item">Q2: go with your pre-decided 4 topics only</div>
+      <div class="bottom-item">Q3: pick whichever crystal system you prepped most</div>
+      <div class="bottom-item">Q4: iron ore or lead-zinc — whichever appears</div>
+      <div class="bottom-item">Last 10 min: add diagrams wherever they're missing</div>
+    </div>
+    <div class="bottom-card">
+      <div class="bottom-card-title"><span>✏️</span> Diagram cheat sheet</div>
+      <div class="bottom-item">Hexagonal axes — 4 lines, label a₁ a₂ a₃ c</div>
+      <div class="bottom-item">Tetragonal — 3 lines, show a₁=a₂, c is taller</div>
+      <div class="bottom-item">Ore body cross-sections — concordant vs discordant</div>
+      <div class="bottom-item">Hornblende cleavage — 2 lines meeting at 124°</div>
+      <div class="bottom-item">India outline — mark Rajasthan, Jharkhand, Odisha</div>
+      <div class="bottom-item">Newton's colour strip — 7-colour band sketch</div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  BGYCT-133 · Crystallography, Mineralogy and Economic Geology · PYQ analysis based on Jun 2023 – Dec 2025
+</footer>
+
+<script>
+  var total = 16;
+  var done = 0;
+
+  function toggle(el) {
+    var wasDone = el.classList.contains('checked');
+    el.classList.toggle('checked');
+    done = wasDone ? done - 1 : done + 1;
+    updateProgress();
+  }
+
+  function updateProgress() {
+    var pct = Math.round((done / total) * 100);
+    document.getElementById('prog-fill').style.width = pct + '%';
+    document.getElementById('prog-label').textContent = done + ' / ' + total + ' done';
+    document.getElementById('prog-pct').textContent = pct + '%';
+  }
+
+  function resetAll() {
+    document.querySelectorAll('.topic.checked').forEach(function(el) {
+      el.classList.remove('checked');
+    });
+    done = 0;
+    updateProgress();
+  }
+</script>
+
+</body>
+</html>
